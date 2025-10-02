@@ -16,6 +16,7 @@ class CustomPhoneTextField extends StatelessWidget {
   final Color? hintColor;
   final Color? iconColor;
   final bool isDisabled;
+  final bool isOptionalMark;
   final bool isCountrySelectionEnabled;
   final Color? disabledBorderColor;
   final Color? disabledTextColor;
@@ -38,6 +39,7 @@ class CustomPhoneTextField extends StatelessWidget {
     this.hintColor,
     this.iconColor,
     this.isDisabled = false,
+    this.isOptionalMark = false,
     this.isCountrySelectionEnabled = true,
     this.disabledBorderColor,
     this.disabledTextColor,
@@ -72,15 +74,28 @@ class CustomPhoneTextField extends StatelessWidget {
           padding: EdgeInsets.only(
             bottom: DefaultSizes.labelBottomPadding,
           ),
-          child: Text(
-            label!,
-            style: labelStyle ??
-                TextStyle(
-                  color: isDisabled
-                      ? effectiveDisabledTextColor
-                      : DefaultColors.labelColor,
-                  fontSize: DefaultSizes.labelFontSize,
-                ),
+          child: Row(
+            children: [
+              Text(
+                label!,
+                style: labelStyle ??
+                    TextStyle(
+                      color: isDisabled
+                          ? effectiveDisabledTextColor
+                          : DefaultColors.labelColor,
+                      fontSize: DefaultSizes.labelFontSize,
+                    ),
+              ),
+              SizedBox(width: isOptionalMark ? 3 : 0,),
+              isOptionalMark ? Text(
+                '*',
+                style: labelStyle ??
+                    TextStyle(
+                      color:  DefaultColors.errorTextColor,
+                      fontSize: DefaultSizes.labelFontSize,
+                    ),
+              ): SizedBox(),
+            ],
           ),
         )
             : const SizedBox(),

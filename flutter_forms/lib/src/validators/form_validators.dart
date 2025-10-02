@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:phone_form_field/phone_form_field.dart';
 
 class FormValidators {
@@ -75,6 +76,56 @@ class FormValidators {
       return 'Please confirm your password';
     } else if (value != password) {
       return 'Passwords do not match';
+    }
+    return null;
+  }
+
+  static String? validateDropdown(
+      String? selectedKey, {
+        String fieldName = 'Option',
+      }) {
+    if (selectedKey == null || selectedKey.isEmpty) {
+      return 'Please select $fieldName';
+    }
+    return null;
+  }
+
+  static String? validateCheckboxGroup(
+      List<String> selectedKeys, {
+        String fieldName = 'option',
+      }) {
+    if (selectedKeys.isEmpty) {
+      return 'Please select at least one $fieldName';
+    }
+    return null;
+  }
+
+  static String? validateRadioGroup(
+      String? selectedKey, {
+        String fieldName = 'option',
+      }) {
+    if (selectedKey == null || selectedKey.isEmpty) {
+      return 'Please select $fieldName';
+    }
+    return null;
+  }
+
+  static String? validateDate(
+      DateTime? selectedDate, {
+        String fieldName = 'date',
+      }) {
+    if (selectedDate == null) {
+      return 'Please select $fieldName';
+    }
+    return null;
+  }
+
+  static String? validateTime(
+      TimeOfDay? selectedTime, {
+        String fieldName = 'time',
+      }) {
+    if (selectedTime == null) {
+      return 'Please select $fieldName';
     }
     return null;
   }

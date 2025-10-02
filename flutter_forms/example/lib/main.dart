@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_forms/flutter_forms.dart';
+import 'package:intl/intl.dart';
 import 'package:phone_form_field/phone_form_field.dart';
 
 void main() {
@@ -32,7 +33,12 @@ class _FormExampleState extends State<FormExample> {
   final _passwordController = TextEditingController();
   final _phoneController = PhoneController();
   final _phoneSuffixController = PhoneController();
+  String? _selectedCountryKey;
   final _email2Controller = TextEditingController();
+  List<String> _selectedHobbies = [];
+  String? _selectedGender;
+  DateTime? _selectedBirthDate;
+  TimeOfDay? _selectedTime;
 
   String? _nameError;
   String? _emailError;
@@ -40,6 +46,38 @@ class _FormExampleState extends State<FormExample> {
   String? _passwordError;
   String? _phoneError;
   String? _phoneSuffixError;
+  String? _countryError;
+  String? _hobbiesError;
+  String? _genderError;
+  String? _birthDateError;
+  String? _timeError;
+
+  final Map<String, String> _countries = {
+    'US': 'United States',
+    'UK': 'United Kingdom',
+    'LK': 'Sri Lanka',
+    'IN': 'India',
+    'AU': 'Australia',
+    'CA': 'Canada',
+  };
+
+  final Map<String, String> _hobbies = {
+    'reading': 'Reading',
+    'gaming': 'Gaming',
+    'sports': 'Sports',
+    'music': 'Music',
+    'cooking': 'Cooking',
+    'traveling': 'Traveling',
+    'photography': 'Photography',
+    'art': 'Art & Crafts',
+  };
+
+  final Map<String, String> _genders = {
+    'M': 'Male',
+    'F': 'Female',
+    'O': 'Other',
+    'N': 'Prefer not to say',
+  };
 
   @override
   void initState() {
@@ -89,12 +127,58 @@ class _FormExampleState extends State<FormExample> {
     });
   }
 
-
   void _onPhoneSuffixChanged(PhoneNumber? phoneNumber) {
     setState(() {
       _phoneSuffixError = FormValidators.validatePhone(phoneNumber);
     });
   }
+
+  void _onCountryChanged(String key, String value) {
+    setState(() {
+      _selectedCountryKey = key;
+      _countryError = null;
+      print('Selected Key: $key, Selected Value: $value');
+    });
+  }
+
+  void _onHobbiesChanged(List<String> selectedKeys, Map<String, String> selectedItems) {
+    setState(() {
+      _selectedHobbies = selectedKeys;
+      _hobbiesError = FormValidators.validateCheckboxGroup(
+        selectedKeys,
+        fieldName: 'hobby',
+      );
+    });
+  }
+
+  void _onGenderChanged(String key, String value) {
+    setState(() {
+      _selectedGender = key;
+      _genderError = FormValidators.validateRadioGroup(
+        key,
+        fieldName: 'a gender',
+      );
+      print('Selected Gender Key: $key, Value: $value');
+    });
+  }
+
+  void _onBirthDateChanged(DateTime selectedDate) {
+    setState(() {
+      _selectedBirthDate = selectedDate;
+      _birthDateError = FormValidators.validateDate(
+        selectedDate,
+      );
+
+    });
+  }
+
+  void _onTimeChanged(TimeOfDay selectedTime) {
+    setState(() {
+      _selectedTime = selectedTime;
+      _timeError = FormValidators.validateTime(selectedTime);
+    });
+  }
+
 
   void _submitForm() {
     setState(() {
@@ -104,13 +188,33 @@ class _FormExampleState extends State<FormExample> {
       _passwordError = FormValidators.validatePassword(_passwordController.text);
       _phoneError = FormValidators.validatePhone(_phoneController.value);
       _phoneSuffixError = FormValidators.validatePhone(_phoneSuffixController.value);
+      _countryError = FormValidators.validateDropdown(_selectedCountryKey);
+      _hobbiesError = FormValidators.validateCheckboxGroup(
+        _selectedHobbies,
+        fieldName: 'hobby',
+      );
+      _genderError = FormValidators.validateRadioGroup(
+        _selectedGender,
+        fieldName: 'a gender',
+      );
+      _birthDateError = FormValidators.validateDate(
+        _selectedBirthDate,
+      );
+
     });
+    _timeError = FormValidators.validateTime(_selectedTime);
 
     if (_nameError == null &&
         _emailError == null &&
         _email2Error == null &&
         _passwordError == null &&
-        _phoneError == null) {
+        _phoneError == null &&
+        _countryError == null &&
+        _hobbiesError == null &&
+        _genderError == null &&
+        _birthDateError == null &&
+        _timeError == null
+    ) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Form submitted successfully!'),
@@ -125,6 +229,11 @@ class _FormExampleState extends State<FormExample> {
       _passwordController.clear();
       _phoneController.value = PhoneNumber(isoCode: IsoCode.LK, nsn: '');
       _phoneSuffixController.value = PhoneNumber(isoCode: IsoCode.LK, nsn: '');
+      _selectedCountryKey = null;
+      _selectedHobbies.clear();
+      _selectedGender = null;
+      _selectedBirthDate = null;
+      _selectedTime = null;
 
       setState(() {
         _nameError = null;
@@ -132,6 +241,11 @@ class _FormExampleState extends State<FormExample> {
         _email2Error = null;
         _passwordError = null;
         _phoneError = null;
+        _countryError = null;
+        _hobbiesError = null;
+        _genderError = null;
+        _birthDateError = null;
+        _timeError = null;
       });
     }
   }
@@ -154,7 +268,7 @@ class _FormExampleState extends State<FormExample> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Registration Form',
+                      'Example Form Fields',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -163,23 +277,15 @@ class _FormExampleState extends State<FormExample> {
                     const SizedBox(height: 30),
                     CustomTextField(
                       label: 'Full Name',
-                      labelStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
                       hint: 'Enter your full name',
                       controller: _nameController,
-                      prefixIcon: const Icon(Icons.person),
                       errorMsg: _nameError,
                       keyboardType: TextInputType.name,
                       onChanged: _onNameChanged,
                     ),
                     CustomTextField(
                       label: 'Email',
-                      labelStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      isOptionalMark: true,
                       hint: 'Enter your email',
                       controller: _emailController,
                       prefixIcon: const Icon(Icons.email),
@@ -189,10 +295,6 @@ class _FormExampleState extends State<FormExample> {
                     ),
                     CustomTextField(
                       label: 'Password',
-                      labelStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
                       hint: 'Enter your password',
                       controller: _passwordController,
                       prefixIcon: const Icon(Icons.lock),
@@ -204,6 +306,7 @@ class _FormExampleState extends State<FormExample> {
                       label: 'Phone Number',
                       controller: _phoneController,
                       errorMsg: _phoneError,
+                      isOptionalMark: true,
                       onChanged: _onPhoneChanged,
                     ),
                     CustomPhoneTextFieldWithButton(
@@ -228,27 +331,67 @@ class _FormExampleState extends State<FormExample> {
                         print('Verify clicked');
                       },
                     ),
-
+                    CustomDropdownField(
+                      label: 'Country',
+                      hint: 'Select your country',
+                      items: _countries,
+                      selectedKey: _selectedCountryKey,
+                      // prefixIcon: const Icon(Icons.public),
+                      errorMsg: _countryError,
+                      isOptionalMark: true,
+                      onChanged: _onCountryChanged,
+                    ),
+                    CustomCheckboxGroup(
+                      label: 'Select Your Hobbies (Min 2)',
+                      items: _hobbies,
+                      selectedKeys: _selectedHobbies,
+                      onChanged: _onHobbiesChanged,
+                      errorMsg: _hobbiesError,
+                      // showSelectAll: true,
+                      isOptionalMark: true,
+                      layout: CheckboxGroupLayout.vertical,
+                    ),
+                    CustomRadioGroup(
+                      label: 'Gender',
+                      items: _genders,
+                      selectedKey: _selectedGender,
+                      onChanged: _onGenderChanged,
+                      errorMsg: _genderError,
+                      isOptionalMark: true,
+                      layout: RadioGroupLayout.vertical,
+                    ),
+                    CustomDateField(
+                      label: 'Date of Birth',
+                      hint: 'Select your birth date',
+                      selectedDate: _selectedBirthDate,
+                      onChanged: _onBirthDateChanged,
+                      errorMsg: _birthDateError,
+                      // prefixIcon: const Icon(Icons.cake),
+                      isOptionalMark: true,
+                      lastDate: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      dateFormat: DateFormat('dd/MM/yyyy'),
+                    ),
+                    CustomTimeField(
+                      label: 'Preferred Time',
+                      hint: 'Select a time',
+                      selectedTime: _selectedTime,
+                      onChanged: _onTimeChanged,
+                      errorMsg: _timeError,
+                      isOptionalMark: true,
+                      use24HourFormat: false,
+                      initialEntryMode: TimePickerEntryMode.dial,
+                    ),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
+                    CustomButton(
+                      text: 'Submit',
+                      onPressed: _submitForm,
+                      isLoading: true,
+                      backgroundColor: Colors.blue,
+                      textColor: Colors.white,
                       height: 50,
-                      child: ElevatedButton(
-                        onPressed: _submitForm,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: const Text(
-                          'Submit',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                      borderRadius: 10,
+                      fontSize: 18,
                     ),
                   ],
                 ),

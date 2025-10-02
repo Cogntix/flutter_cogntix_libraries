@@ -20,6 +20,7 @@ class CustomTextFieldWithButton extends StatelessWidget {
   final Color? hintColor;
   final Color? iconColor;
   final bool isDisabled;
+  final bool isOptionalMark;
   final Color? disabledBorderColor;
   final Color? disabledTextColor;
   final Color? disabledBackgroundColor;
@@ -53,6 +54,7 @@ class CustomTextFieldWithButton extends StatelessWidget {
     this.hintColor,
     this.iconColor,
     this.isDisabled = false,
+    this.isOptionalMark = false,
     this.disabledBorderColor,
     this.disabledTextColor,
     this.disabledBackgroundColor,
@@ -98,15 +100,28 @@ class CustomTextFieldWithButton extends StatelessWidget {
           padding: EdgeInsets.only(
             bottom: DefaultSizes.labelBottomPadding,
           ),
-          child: Text(
-            label!,
-            style: labelStyle ??
-                TextStyle(
-                  color: isDisabled
-                      ? effectiveDisabledTextColor
-                      : DefaultColors.labelColor,
-                  fontSize: DefaultSizes.labelFontSize,
-                ),
+          child: Row(
+            children: [
+              Text(
+                label!,
+                style: labelStyle ??
+                    TextStyle(
+                      color: isDisabled
+                          ? effectiveDisabledTextColor
+                          : DefaultColors.labelColor,
+                      fontSize: DefaultSizes.labelFontSize,
+                    ),
+              ),
+              SizedBox(width: isOptionalMark ? 3 : 0,),
+              isOptionalMark ? Text(
+                '*',
+                style: labelStyle ??
+                    TextStyle(
+                      color:  DefaultColors.errorTextColor,
+                      fontSize: DefaultSizes.labelFontSize,
+                    ),
+              ): SizedBox(),
+            ],
           ),
         )
             : const SizedBox(),

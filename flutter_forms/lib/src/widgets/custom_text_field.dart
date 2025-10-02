@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_forms/src/themes/default_colors.dart';
 import 'package:flutter_forms/src/themes/default_sizes.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String? label;
   final TextStyle? labelStyle;
   final String? hint;
@@ -22,6 +22,7 @@ class CustomTextField extends StatelessWidget {
   final Color? hintColor;
   final Color? iconColor;
   final bool isDisabled;
+  final bool isOptionalMark;
   final Color? disabledBorderColor;
   final Color? disabledTextColor;
   final Color? disabledBackgroundColor;
@@ -47,91 +48,146 @@ class CustomTextField extends StatelessWidget {
     this.hintColor,
     this.iconColor,
     this.isDisabled = false,
+    this.isOptionalMark = false,
     this.disabledBorderColor,
     this.disabledTextColor,
     this.disabledBackgroundColor,
   }) : super(key: key);
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  late bool _isObscured;
+
+  @override
+  void initState() {
+    super.initState();
+    _isObscured = widget.obscureText;
+  }
+
+  @override
+  void didUpdateWidget(CustomTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.obscureText != oldWidget.obscureText) {
+      _isObscured = widget.obscureText;
+    }
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isObscured = !_isObscured;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final effectiveErrorColor = errorColor ?? DefaultColors.errorBorderColor;
-    final hasError = errorMsg != null;
-    final effectiveBorderColor = borderColor ?? DefaultColors.borderColor;
+    final effectiveErrorColor = widget.errorColor ?? DefaultColors.errorBorderColor;
+    final hasError = widget.errorMsg != null;
+    final effectiveBorderColor = widget.borderColor ?? DefaultColors.borderColor;
     final effectiveFocusedBorderColor =
-        focusedBorderColor ?? DefaultColors.focusedBorderColor;
-    final effectiveTextColor = textColor ?? DefaultColors.textColor;
-    final effectiveHintColor = hintColor ?? DefaultColors.hintColor;
-    final effectiveIconColor = iconColor ?? DefaultColors.prefixIconColor;
+        widget.focusedBorderColor ?? DefaultColors.focusedBorderColor;
+    final effectiveTextColor = widget.textColor ?? DefaultColors.textColor;
+    final effectiveHintColor = widget.hintColor ?? DefaultColors.hintColor;
+    final effectiveIconColor = widget.iconColor ?? DefaultColors.prefixIconColor;
     final effectiveDisabledBorderColor =
-        disabledBorderColor ?? DefaultColors.borderColor;
+        widget.disabledBorderColor ?? DefaultColors.borderColor;
     final effectiveDisabledTextColor =
-        disabledTextColor ?? DefaultColors.hintColor;
+        widget.disabledTextColor ?? DefaultColors.hintColor;
     final effectiveDisabledBackgroundColor =
-        disabledBackgroundColor ?? DefaultColors.disabledBackgroundColor;
+        widget.disabledBackgroundColor ?? DefaultColors.disabledBackgroundColor;
+
+    Widget? effectiveSuffixIcon = widget.suffixIcon;
+    if (widget.obscureText) {
+      effectiveSuffixIcon = IconButton(
+        icon: Icon(
+          _isObscured ? Icons.visibility_off : Icons.visibility,
+          color: widget.isDisabled
+              ? effectiveDisabledTextColor
+              : effectiveIconColor,
+          size: DefaultSizes.iconSize,
+        ),
+        onPressed: widget.isDisabled ? null : _togglePasswordVisibility,
+      );
+    } else if (widget.suffixIcon != null) {
+      effectiveSuffixIcon = IconTheme(
+        data: IconThemeData(
+          color: widget.isDisabled
+              ? effectiveDisabledTextColor
+              : effectiveIconColor,
+          size: DefaultSizes.iconSize,
+        ),
+        child: widget.suffixIcon!,
+      );
+    }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        label != null
+        widget.label != null
             ? Padding(
           padding: EdgeInsets.only(
             bottom: DefaultSizes.labelBottomPadding,
           ),
-          child: Text(
-            label!,
-            style: labelStyle ??
-                TextStyle(
-                  color: isDisabled
-                      ? effectiveDisabledTextColor
-                      : DefaultColors.labelColor,
-                  fontSize: DefaultSizes.labelFontSize,
-                ),
+          child:  Row(
+            children: [
+              Text(
+                widget.label!,
+                style: widget.labelStyle ??
+                    TextStyle(
+                      color: widget.isDisabled
+                          ? effectiveDisabledTextColor
+                          : DefaultColors.labelColor,
+                      fontSize: DefaultSizes.labelFontSize,
+                    ),
+              ),
+              SizedBox(width: widget.isOptionalMark ? 3 : 0,),
+              widget.isOptionalMark ? Text(
+                '*',
+                style: widget.labelStyle ??
+                    TextStyle(
+                      color:  DefaultColors.errorTextColor,
+                      fontSize: DefaultSizes.labelFontSize,
+                    ),
+              ): SizedBox(),
+            ],
           ),
         )
             : const SizedBox(),
         TextFormField(
-          controller: controller,
-          validator: validator,
-          keyboardType: keyboardType,
-          obscureText: obscureText,
-          onChanged: isDisabled ? null : onChanged,
-          enabled: !isDisabled,
+          controller: widget.controller,
+          validator: widget.validator,
+          keyboardType: widget.keyboardType,
+          obscureText: _isObscured,
+          onChanged: widget.isDisabled ? null : widget.onChanged,
+          enabled: !widget.isDisabled,
           style: TextStyle(
-            color: isDisabled ? effectiveDisabledTextColor : effectiveTextColor,
+            color: widget.isDisabled ? effectiveDisabledTextColor : effectiveTextColor,
             fontSize: DefaultSizes.textFontSize,
           ),
-          decoration: inputDecoration ??
+          decoration: widget.inputDecoration ??
               InputDecoration(
-                hintText: hint,
+                hintText: widget.hint,
                 hintStyle: TextStyle(
                   color: effectiveHintColor,
                   fontSize: DefaultSizes.hintFontSize,
                 ),
-                prefixIcon: prefixIcon != null
+                prefixIcon: widget.prefixIcon != null
                     ? IconTheme(
                   data: IconThemeData(
-                    color: isDisabled
+                    color: widget.isDisabled
                         ? effectiveDisabledTextColor
                         : effectiveIconColor,
                     size: DefaultSizes.iconSize,
                   ),
-                  child: prefixIcon!,
+                  child: widget.prefixIcon!,
                 )
                     : null,
-                suffixIcon: suffixIcon != null
-                    ? IconTheme(
-                  data: IconThemeData(
-                    color: isDisabled
-                        ? effectiveDisabledTextColor
-                        : effectiveIconColor,
-                    size: DefaultSizes.iconSize,
-                  ),
-                  child: suffixIcon!,
-                )
-                    : null,
+                suffixIcon: effectiveSuffixIcon,
                 filled: true,
-                fillColor: isDisabled
+                fillColor: widget.isDisabled
                     ? effectiveDisabledBackgroundColor
                     : DefaultColors.backgroundColor,
                 border: OutlineInputBorder(
@@ -144,7 +200,7 @@ class CustomTextField extends StatelessWidget {
                     width: DefaultSizes.normalBorderWidth,
                   )
                       : BorderSide(
-                    color: isDisabled
+                    color: widget.isDisabled
                         ? effectiveDisabledBorderColor
                         : effectiveBorderColor,
                     width: DefaultSizes.normalBorderWidth,
@@ -195,7 +251,7 @@ class CustomTextField extends StatelessWidget {
             top: DefaultSizes.errorTopPadding,
           ),
           child: Text(
-            errorMsg!,
+            widget.errorMsg!,
             style: TextStyle(
               color: effectiveErrorColor,
               fontSize: DefaultSizes.errorFontSize,

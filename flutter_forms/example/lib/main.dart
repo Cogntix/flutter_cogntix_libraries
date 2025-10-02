@@ -386,7 +386,7 @@ class _FormExampleState extends State<FormExample> {
                     CustomButton(
                       text: 'Submit',
                       onPressed: _submitForm,
-                      isLoading: true,
+                      isLoading: false,
                       backgroundColor: Colors.blue,
                       textColor: Colors.white,
                       height: 50,

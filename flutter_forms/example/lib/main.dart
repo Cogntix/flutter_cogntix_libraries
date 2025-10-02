@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_forms/flutter_forms.dart';
+import 'package:cogntix_flutter_forms/cogntix_flutter_forms.dart';
 import 'package:intl/intl.dart';
 import 'package:phone_form_field/phone_form_field.dart';
 
@@ -349,7 +349,7 @@ class _FormExampleState extends State<FormExample> {
                       errorMsg: _hobbiesError,
                       // showSelectAll: true,
                       isOptionalMark: true,
-                      layout: CheckboxGroupLayout.vertical,
+                      layout: CheckboxGroupLayout.grid,
                     ),
                     CustomRadioGroup(
                       label: 'Gender',
@@ -358,7 +358,7 @@ class _FormExampleState extends State<FormExample> {
                       onChanged: _onGenderChanged,
                       errorMsg: _genderError,
                       isOptionalMark: true,
-                      layout: RadioGroupLayout.vertical,
+                      layout: RadioGroupLayout.grid,
                     ),
                     CustomDateField(
                       label: 'Date of Birth',

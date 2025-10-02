@@ -49,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
+  cogntix_flutter_forms:
+    dependency: "direct main"
+    description:
+      name: cogntix_flutter_forms
+      sha256: "4b0ce2a82b51b93bd4c6bd260c62ed1f601e7a866bbe1c6c0b4b921107e01a9b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   collection:
     dependency: transitive
     description:
@@ -94,13 +102,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.17+1"
-  flutter_forms:
-    dependency: "direct main"
-    description:
-      path: ".."
-      relative: true
-    source: path
-    version: "0.0.1"
   flutter_lints:
     dependency: "direct dev"
     description:

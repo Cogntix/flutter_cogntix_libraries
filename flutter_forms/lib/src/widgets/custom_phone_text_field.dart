@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phone_form_field/phone_form_field.dart';
-import 'package:flutter_forms/src/themes/default_colors.dart';
-import 'package:flutter_forms/src/themes/default_sizes.dart';
+import 'package:cogntix_flutter_forms/src/themes/default_colors.dart';
+import 'package:cogntix_flutter_forms/src/themes/default_sizes.dart';
 
 class CustomPhoneTextField extends StatelessWidget {
   final String? label;

@@ -1,7 +1,6 @@
-name: flutter_forms
-description: "Cogntix reusable forms"
-version: 0.0.1
-homepage:
+name: cogntix_flutter_forms
+description: "A comprehensive Flutter package providing customizable, reusable form widgets with built-in validation for text fields, phone numbers, dropdowns, date/time pickers, and more."
+version: 0.0.7
 
 environment:
   sdk: ^3.9.0
@@ -18,4 +17,20 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
-flutter:
+topics:
+  - form-fields
+  - phone-form-field
+  - date-time-picker
+  - dropdown
+  - custom-widgets
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
+
+
+license: MIT

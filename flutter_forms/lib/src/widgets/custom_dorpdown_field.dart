@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_forms/src/themes/default_colors.dart';
-import 'package:flutter_forms/src/themes/default_sizes.dart';
+import 'package:cogntix_flutter_forms/src/themes/default_colors.dart';
+import 'package:cogntix_flutter_forms/src/themes/default_sizes.dart';
 
 class CustomDropdownField extends StatefulWidget {
   final String? label;

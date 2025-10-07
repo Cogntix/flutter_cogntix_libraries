@@ -1,6 +1,6 @@
 name: cogntix_flutter_forms
 description: "A comprehensive Flutter package providing customizable, reusable form widgets with built-in validation for text fields, phone numbers, dropdowns, date/time pickers, and more."
-version: 0.0.7
+version: 0.0.8
 
 environment:
   sdk: ^3.9.0
